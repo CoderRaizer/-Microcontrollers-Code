@@ -1,0 +1,485 @@
+#include <mega16.h>
+#include <delay.h>
+#define LED PORTA
+#define Off 0x00
+#define On 0xff;
+
+char led[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
+
+
+
+void MotLedSangDuoiQuaLai()//cong tat 1
+{
+    int i = 0;
+    while(PINB == 0x01){
+        if(i > 7){
+        i = 0;
+        }
+        LED = led[i];
+        delay_ms(20);
+        i++;
+    }
+}
+
+
+void TamLedSangDanTatDan()//cong tat 2
+{
+    unsigned char i;
+    while(PINB==0x02){
+        
+        LED = Off;
+        //SANG DAN
+        for(i=0;i<8;i++)
+        {
+            LED = (LED<<1) | 0x01;
+            delay_ms(20);
+        }
+        //TAT DAN
+        for(i=0;i<8;i++)
+        {
+            LED = LED<<1;
+            delay_ms(20);
+        }
+    }
+}
+
+
+void SangTu2BenVao_TatTu2BenVao()//cong tat 3
+{
+    int i;
+    unsigned char x = 0b00000001;
+    unsigned char y = 0b10000000;
+    for(i = 0; i < 4; i++)
+    {
+        LED += (x+y);
+        delay_ms(20);
+        x = (x<<1);
+        y = (y>>1);
+    }
+    x = 0b00000001;
+    y = 0b10000000;
+    for(i = 0; i < 4; i++)
+    {
+        LED -= (x+y);
+        delay_ms(20);
+        x = (x<<1);
+        y = (y>>1);
+    }
+}
+
+
+void MotLedChayTuTraiQuaPhaiDungLaiOBenPhaiChoDenKhi8LedCungSang()//cong tat 4
+{   
+    int i,j;    
+    unsigned char x = 0b00000000;
+    unsigned char y = 0b00000000;
+    
+    for(i = 0; i < 8; i++)
+    {                    
+        x = 0b00000000;
+        for(j = i ; j < 8 ; j++)
+        {
+            LED = x + y;
+            delay_ms(20);
+            x = (x<<1);
+            if(j == i)
+            {
+                x+=1;
+            }
+        }             
+         y += x;
+         if(i == 7)
+         {
+            LED = y;
+            delay_ms(20);
+         }
+    }
+}
+
+
+void TamLedChopTat()//cong tat 5
+{
+    unsigned char x = Off;
+    unsigned char y = On;
+    LED = x;
+    delay_ms(20);
+    LED = y;
+    delay_ms(20);
+}
+
+
+void TamLedSangTatXenKe()//cong tat 6
+{
+    unsigned char a = 0b10101010;
+    unsigned char b = 0b01010101;
+    LED = a;
+    delay_ms(20);
+    LED = b;
+    delay_ms(20);
+}
+
+
+void BonLedSangBonLedTat()//cong tat 7
+{
+   unsigned char a = 0b00001111;
+   unsigned char b = 0b11110000;
+   LED = a;
+   delay_ms(20);
+   LED = b;
+   delay_ms(20); 
+}
+
+
+void HaiLedSangChayTuHaiBenVaoVaChayRaHaiBen()//cong tat 8
+{
+    int i,j;
+    unsigned char a = 0b00000001;
+    unsigned char b = 0b10000000;
+    for(i = 0; i < 4; i++)
+    {
+        LED = a+b;
+        delay_ms(20);
+        a = (a<<1);
+        b = (b>>1);
+    } 
+    a = 0b00010000;
+    b = 0b00001000;
+    for(i = 0; i < 4; i++)
+    {
+        LED = a+b;
+        delay_ms(20);
+        a = (a<<1);
+        b = (b>>1);
+    } 
+}
+
+
+
+
+
+
+
+void main(void)
+{
+
+
+
+/*-------------*/
+PORTA=0x00;
+DDRA=0xFF;
+/*-------------*/
+PORTB=0x00;
+DDRB=0x00;
+/*-------------*/
+PORTC=0x00;
+DDRC=0x00;
+/*-------------*/
+PORTD=0x00;
+DDRD=0x00;
+/*-------------*/
+TCCR0=0x00;
+TCNT0=0x00;
+OCR0=0x00;
+
+/*----------------------------*/
+TCCR1A=0x00;
+TCCR1B=0x00;
+TCNT1H=0x00;
+TCNT1L=0x00;
+ICR1H=0x00;
+ICR1L=0x00;
+OCR1AH=0x00;
+OCR1AL=0x00;
+OCR1BH=0x00;
+OCR1BL=0x00;
+/*----------------------------*/
+ASSR=0x00;
+TCCR2=0x00;
+TCNT2=0x00;
+OCR2=0x00;
+/*----------------------------*/
+MCUCR=0x00;
+MCUCSR=0x00;
+/*----------------------------*/
+TIMSK=0x00;
+/*----------------------------*/
+UCSRB=0x00;
+/*----------------------------*/
+ACSR=0x80;
+SFIOR=0x00;
+/*----------------------------*/
+ADCSRA=0x00;
+/*----------------------------*/
+SPCR=0x00;
+/*----------------------------*/
+TWCR=0x00;
+
+
+
+
+
+/*----------------------CODE-----------------------*/
+while (1)
+      {
+        switch(PINB)
+        {
+            case 0x01:{//Cong tat 1
+            
+            while(PINB == 0x01)
+            {   
+                MotLedSangDuoiQuaLai();
+            }
+            PORTA = Off;
+            delay_ms(10);
+            break;
+            }
+            case 0x02:{//Cong tat 2
+            while(PINB == 0x02){
+                 TamLedSangDanTatDan();
+            }  
+                LED = Off;
+                delay_ms(10);
+                break; 
+            }
+            
+            case 0x04:{//Cong tat 3
+                while(PINB == 0x04)
+                {   
+                   SangTu2BenVao_TatTu2BenVao();
+                }
+                LED = Off;
+                delay_ms(10);
+                break;
+            }
+            
+            case 0x08:{//Cong tat 4
+                while(PINB == 0x08)
+                {   
+                   MotLedChayTuTraiQuaPhaiDungLaiOBenPhaiChoDenKhi8LedCungSang();
+                }
+                LED = Off;
+                delay_ms(10);
+                break;
+            }
+            
+            case 0x10:{//Cong tat 5
+                while(PINB == 0x10)
+                {
+                    TamLedChopTat();
+                }
+                LED = Off;
+                delay_ms(10);
+                break;
+            }
+            
+            case 0x20:{//Cong tat 6
+                while(PINB == 0x20)
+                {
+                    TamLedSangTatXenKe();
+                }
+                LED = Off;
+                delay_ms(10);
+                break;
+            }
+            
+            case 0x40:{//Cong tat 7
+                while(PINB == 0x40)
+                {
+                   BonLedSangBonLedTat(); 
+                }
+                LED = Off;
+                delay_ms(10);
+                break;
+            }
+            
+            case 0x80:{//Cong tat 8
+                while(PINB == 0x80)
+                {
+                   HaiLedSangChayTuHaiBenVaoVaChayRaHaiBen(); 
+                }
+                LED = Off;
+                delay_ms(10);
+                break;
+            } 
+
+        }
+
+      }
+}
+
+
+
+
+
+
+//*----------------------------------------------*//
+//                    int a = 1;
+//                    int i;
+//                    for(i = 0; i < 7; i++) {    
+//                        a = a<<1;
+//                        PORTA = a;
+//                        delay_ms(50); 
+//                    }
+//                     for(i = 0; i < 7; i++) {
+//                         a = a>>1;
+//                         PORTA = a;
+//                         delay_ms(50);
+//                     }
+//                     PORTA = 0x00;
+//                     break;
+//*----------------------------------------------*//
+
+
+
+
+
+//*------------------case 0x02----------------------------*//
+//                count = 0;
+//                dir = 0;// left to right
+//                while(PINB == 0x02)
+//                { 
+//                    LED = led[count];
+//                    delay_ms(15);
+//                   if(dir == 0){
+//                        count++;
+//                        if(count >= 7)
+//                        {
+//                            dir = 1;//right to left
+//                        }
+//                   } else {
+//                        count--;
+//                        if(count <= 0)
+//                        {
+//                             dir = 0;
+//                        }
+//                   }  
+//                }
+//                LED = 0x00;
+//                delay_ms(10);
+//*----------------------------------------------*//
+
+
+
+
+/*-----------Sang dan tu trai qua phai xong tat dan tu phai qua trai----------*/
+//                dir = 0; //left to right 
+//                val = 0;
+//                LED = Off;
+//                while(PINB == 0x04)
+//                {
+//                    PORTA = val;
+//                    delay_ms(20);
+//                    if(dir == 0)
+//                    {
+//                        val = val << 1;
+//                        val = val + 1;
+//                        if(val > 255)
+//                        {
+//                            dir = 1;
+//                        }
+//                        if(PINB != 0x04)
+//                        {
+//                            PORTA = 0x00;
+//                            delay_ms(10);
+//                            break;  
+//                        }
+//                    }
+//                    else
+//                    {
+//                        val = val >> 1;
+//                        if(val <= 0)
+//                        {
+//                            dir = 0;
+//                        }
+//                        if(PINB != 0x04)
+//                        {
+//                            PORTA = 0x00;
+//                            delay_ms(10);
+//                            break;  
+//                        }
+//                    }
+//             }
+/*-----------Sang dan tu trai qua phai xong tat dan tu phai qua trai----------*/ 
+            
+            
+            
+            
+            
+/*---------------------------------------------------------*/
+//                //0000 0000 0
+//                //1000 0001 129
+//                //0100 0010 195
+//                //0010 0100
+//                //0001 1000
+//                dir = 0;
+//                val_1 = 0x80;
+//                val_2 = 0x01;
+//                while(1)
+//                {  
+//                    PORTA = val_1 + val_2;
+//                    delay_ms(50);
+//                    if(dir == 0)
+//                    {
+//                        val_1 = val_1 >> 1;
+//                        val_2 = val_2 << 1;
+//                        if(val_2 > 8)
+//                        {
+//                            val_1 = 0x10; //0001 0000
+//                            val_2 = 0x08; //0000 1000
+//                            dir = 1;
+//                        }
+//                    }
+//                    else
+//                    {   if(val_2 == 0x00 )
+//                        {
+//                            val_1 = 0x80;
+//                            val_2 = 0x01;
+//                            dir = 0; 
+//                        }
+//                        else
+//                        {
+//                            val_1 = val_1 << 1;
+//                            val_2 = val_2 >> 1;
+//                        }
+//                    }
+/*---------------------------------------------------------*/
+
+
+
+
+/*-----Sang tu 2 ben vao va tat tu 2 ben vao (chua duoc)------*/
+//   unsigned char i;
+//   unsigned char a = 0x01;
+//   unsigned char b = 0x80;
+//   int x = 0;
+//   x = 0; a = 0x01;b = 0x80;
+//   while(PINB==0x04){
+//   LED = Off;
+//      if(x > 3)
+//      { 
+//        unsigned char x;
+//        unsigned char y;
+//        for(i=0;i<3;i++)
+//        {   
+//            x = a<<1;
+//            y = b>>1;
+//            LED = x+y;
+//            delay_ms(20);
+//
+//        }
+//        
+//        delay_ms(20);
+//        LED = Off;
+//          x = 0; a = 0x01;b = 0x80;
+//      }
+//      
+//      else {
+//         LED = a+b;
+//         delay_ms(30);
+//         a = (a<<1)| 0x01;
+//         b = (b>>1)| 0x80;
+//         x++;
+//         }     
+//   
+//   }
+/*------------------------------------------------*/ 

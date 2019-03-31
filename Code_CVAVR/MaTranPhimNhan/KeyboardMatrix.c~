@@ -1,0 +1,97 @@
+#include <mega16.h>
+#include <delay.h>
+
+unsigned char temp;
+unsigned char num[16] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90, 0xA0, 0x83, 0xC6, 0xA1, 0x86, 0x8E};
+
+void main(void)
+{
+int pos;
+
+    
+PORTA=0x00;
+DDRA=0x00;
+PORTB=0x00;
+DDRB=0xFF;
+PORTC=0x00;
+DDRC=0x00;
+PORTD=0x00;
+DDRD=0xFF;
+TCCR0=0x00;
+TCNT0=0x00;
+OCR0=0x00;
+TCCR1A=0x00;
+TCCR1B=0x00;
+TCNT1H=0x00;
+TCNT1L=0x00;
+ICR1H=0x00;
+ICR1L=0x00;
+OCR1AH=0x00;
+OCR1AL=0x00;
+OCR1BH=0x00;
+OCR1BL=0x00;
+ASSR=0x00;
+TCCR2=0x00;
+TCNT2=0x00;
+OCR2=0x00;
+MCUCR=0x00;
+MCUCSR=0x00;
+TIMSK=0x00;
+UCSRB=0x00;
+ACSR=0x80;
+SFIOR=0x00;
+ADCSRA=0x00;
+SPCR=0x00;
+TWCR=0x00;
+
+
+
+while (1)
+      {  
+        PORTB = 0x02;
+            PORTD = 0x01;
+            switch(PINC)
+            {
+                case 0x01: pos = 0; break;
+                case 0x02: pos = 1; break;
+                case 0x04: pos = 2; break;
+                case 0x08: pos = 3; break;
+                default: break;
+            }
+            delay_us(50);
+            PORTD = 0x02;
+            switch(PINC)
+            {
+                case 0x01: pos = 4; break;
+                case 0x02: pos = 5; break;
+                case 0x04: pos = 6; break;
+                case 0x08: pos = 7; break;
+                default: break;
+            }  
+            delay_us(50);
+            PORTD = 0x04;
+            switch(PINC)
+            {
+                case 0x01: pos = 8; break;
+                case 0x02: pos = 9; break;
+                case 0x04: pos = 10; break;
+                case 0x08: pos = 11; break;       
+                default: break;
+            } 
+            delay_us(50);
+            PORTD = 0x08;
+            switch(PINC)
+            {
+                case 0x01: pos = 12; break;
+                case 0x02: pos = 13; break;
+                case 0x04: pos = 14; break;
+                case 0x08: pos = 15; break;    
+                default: break;
+            }
+            delay_us(50);
+            PORTA = num[pos];
+            delay_us(50);    
+      
+      }
+}
+
